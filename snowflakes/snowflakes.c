@@ -1,71 +1,36 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "snowflakes.h"
 
-int are_identical(int snow1[], int snow2[]);
+// Compare two snowflakes in O(n^2) time complexity
+// input: array of arrays of length 6, length of array (6)
+// output: nothing. Print "match" or "no match" based on if arrays are equal or not
 
-void identify_identical(int snowflakes[][6], int n) {
-  int i, j;
-  for (i = 0; i < n; i++) {
-    for (j = 0; j < n; j++) {
-      if (are_identical(snowflakes[i], snowflakes[j])) {
-        printf("Twin snowflakes found.\n");
-        return;
-      }
-    }
-  }
+// Check if the snowflakes are identical moving from left to right and wrapping
+// input: 2 snowflakes to compare (arrays of length 6), the start index
+// output: number -- 1 if there is a match, 0 if there isn't a match
 
-  printf("No two snowflakes are alike.\n");
-}
+// Check if the snowflakes are identical moving from right to left and wrapping
+// input: 2 snowflakes to compare (arrays of length 6), the start index
+// output: number -- 1 if there is a match, 0 if there isn't a match
 
-int identical_right(int snow1[], int snow2[], int start) {
-  int offset;
-  for (offset = 0; offset < 6; offset++) {
-    if (snow1[offset] != snow2[(start + offset) % 6]) {
-      return 0;
-    }
-  }
-  return 1;
-}
+// Check if the snowflakes are both identical right and left
+// input: 2 snowflakes (arrays of int)
+// output: number -- 1 if there is a match, 0 if there isn't a match
 
-int identical_left(int snow1[], int snow2[], int start) {
-  int offset, snow2_index;
-  for (offset = 0; offset < 6; offset++) {
-    snow2_index = start - offset;
-    if (snow2_index < 0) {
-      snow2_index = snow2_index + 6;
-    }
-    if (snow1[offset] != snow2[snow2_index]) {
-      return 0;
-    }
-  }
-  return 1;
-}
-
-int are_identical(int snow1[], int snow2[]) {
-  int start;
-  for (start = 0; start < 6; start++) {
-    if (identical_right(snow1, snow2, start)) {
-      return 1;
-    }
-    if (identical_left(snow1, snow2, start)) {
-      return 1;
-    }
-  }
-  return 0;
-}
-
-#define SIZE 100000
+#define MAX_SIZE 100000
 
 int main(void) {
-  static int snowflakes[SIZE][6];
+  int snowflakes[MAX_SIZE][6];
   int n, i, j;
+
+  printf("How many snowflakes?\n");
   scanf("%d", &n);
+
   for (i = 0; i < n; i++) {
+    printf("Enter 6 values for snowflake %i:\n", n + 1);
     for (j = 0; j < 6; j++) {
       scanf("%d", &snowflakes[i][j]);
     }
   }
-  identify_identical(snowflakes, n);
   return 0;
 }
