@@ -27,7 +27,7 @@ int main(void) {
   scanf("%d", &n);
 
   for (i = 0; i < n; i++) {
-    printf("Enter 6 values for snowflake %i:\n", n + 1);
+    printf("Enter 6 values for snowflake %i:\n", i + 1);
     for (j = 0; j < 6; j++) {
       scanf("%d", &snowflakes[i][j]);
     }
