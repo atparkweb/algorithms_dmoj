@@ -1,13 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "snowflakes.h"
 
 #define SIZE 100000
-
-// Node struct for Linked List
-typedef struct snowflake_node {
-  int snowflake[6];
-  struct snowflake_node *next;
-} snowflake_node;
 
 int identical_right(int snow1[], int snow2[], int start) {
   int offset;
@@ -46,14 +41,21 @@ int are_identical(int snow1[], int snow2[]) {
   return 0;
 }
 
-void identify_identical(int snowflakes[][6], int n) {
-  int i, j;
-  for (i = 0; i < n; i++) {
-    for (j = i+1; j < n; j++) {
-      if (are_identical(snowflakes[i], snowflakes[j])) {
-        printf("Twin snowflakes have been found.\n");
-        return;
+void identify_identical(snowflake_node *snowflakes[]) {
+  snowflake_node *node1, *node2;
+  int i;
+  for (i = 0; i < SIZE; i++) {
+    node1 = snowflakes[i];
+    while (node1 != NULL) {
+      node2 = node1->next;
+      while (node2 != NULL) {
+        if (are_identical(node1->snowflake, node2->snowflake)) {
+          printf("Twin snowflakes found.\n");
+          return;
+        }
+        node2 = node2->next;
       }
+      node1 = node1->next;
     }
   }
   printf("No two snowflakes are alike.\n");
@@ -64,16 +66,26 @@ int code(int snowflake[]) {
 }
 
 int main(void) {
-  int snowflakes[SIZE][6];
-  int n, i, j;
-  printf("How many snowflakes?\n");
+  static snowflake_node *snowflakes[SIZE] = { NULL };
+  snowflake_node *snow;
+  int n, i, j, snowflake_code;
   scanf("%d", &n);
   for (i = 0; i < n; i++) {
-    printf("Enter 6 values for snowflake %i:\n", i+1);
-    for (j = 0; j < 6; j++) {
-      scanf("%d", &snowflakes[i][j]);
+    snow = malloc(sizeof(snowflake_node));
+    if (snow == NULL) {
+      fprintf(stderr, "malloc error\n");
+      exit(1);
     }
+    for (j = 0; j < 6; j++) {
+      scanf("%d", &snow->snowflake[j]);
+    }
+    snowflake_code = code(snow->snowflake);
+    snow->next = snowflakes[snowflake_code];
+    snowflakes[snowflake_code] = snow;
   }
-  identify_identical(snowflakes, n);
+  identify_identical(snowflakes);
+
+  // FIX: deallocate all malloc'd memory
+
   return 0;
 }
